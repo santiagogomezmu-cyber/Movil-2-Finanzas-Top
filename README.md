@@ -9,3 +9,15 @@ En general, Finanzas Top busca ser una herramienta práctica para que los usuari
  
 # Movil-2-Finanzas-Top
 
+<img width="738" height="1600" alt="image" src="https://github.com/user-attachments/assets/d8bc92dd-b7e8-4632-a5e5-de12f7373b2e" />
+
+<img width="738" height="1600" alt="image" src="https://github.com/user-attachments/assets/24932d55-a099-4aa7-a4cd-be8ba0d82a9e" />
+
+<img width="738" height="1600" alt="image" src="https://github.com/user-attachments/assets/0e4defbd-fedf-4fa0-a786-dec69aeedb29" />
+
+<img width="738" height="1600" alt="WhatsApp Image 2026-09-17 at 5 44 01 AM (3)" src="https://github.com/user-attachments/assets/a7e1f7a4-6a61-4b3b-a34d-6c9343eeb941" />
+
+<img width="738" height="1600" alt="WhatsApp Image 2026-09-17 at 5 44 01 AM (4)" src="https://github.com/user-attachments/assets/78df9dab-2c2c-4e25-bfe4-ffc58af5c994" />
+
+<img width="738" height="1600" alt="WhatsApp Image 2026-09-17 at 5 44 01 AM (5)" src="https://github.com/user-attachments/assets/c09d761c-6add-48e9-9232-4e942a89269c" />
+
