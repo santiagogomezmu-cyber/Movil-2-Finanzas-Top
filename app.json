@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "movil-1",
+    "slug": "movil-1",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/nacional.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/nacional.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/nacional.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-sqlite",
+      "expo-status-bar"
+    ]
+  }
+}
