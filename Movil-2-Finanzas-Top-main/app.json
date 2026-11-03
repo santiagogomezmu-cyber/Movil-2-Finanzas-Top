@@ -4,11 +4,11 @@
     "slug": "movil-1",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/nacional.png",
+    "icon": "./assets/icono_movil2.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/nacional.png",
+      "image": "./assets/icono_movil2.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,10 +17,11 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/nacional.png",
+        "foregroundImage": "./assets/icono_movil2.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.restrepo21.movil1"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -29,6 +30,12 @@
       "expo-font",
       "expo-sqlite",
       "expo-status-bar"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "fca23eb7-00d3-4209-9693-1808ec3b63a2"
+      }
+    },
+    "owner": "restrepo21"
   }
 }

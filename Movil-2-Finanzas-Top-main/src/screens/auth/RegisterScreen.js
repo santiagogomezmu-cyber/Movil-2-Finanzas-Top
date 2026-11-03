@@ -1,18 +1,21 @@
 import { useState } from "react";
 import colors from "../../constants/colors";
-import { StyleSheet, TextInput, View, Text, Alert, TouchableOpacity } from "react-native";
+import { StyleSheet, TextInput, View, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, ensureFirebaseAuth } from "../../services/firebaseService";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../../navigation/AuthContext";
 
 const RegisterScreen = () => {
+    const { darkMode } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [name, setName] = useState('');
     const [error, setError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigation = useNavigation();
 
     const handleRegister = async () => {
@@ -39,23 +42,14 @@ const RegisterScreen = () => {
         }
 
         try {
+            setIsSubmitting(true);
             const firebaseAuth = ensureFirebaseAuth();
-            const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email.trim(), password);
             const user = userCredential.user;
 
-            // Actualizar el perfil del usuario con el nombre
             await updateProfile(user, {
                 displayName: name
             });
-
-            Alert.alert('🎉 ¡Registro Increíble!', '¡Bienvenido al equipo! Tu cuenta fue creada exitosamente. 🚀', [
-                {
-                    text: '¡Genial!', onPress: () => navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Login' }],
-                    })
-                }
-            ]);
         } catch (error) {
             console.error('=== ERROR DE REGISTRO ===');
             console.error('Código de error:', error.code);
@@ -95,16 +89,18 @@ const RegisterScreen = () => {
             }
 
             setError(errorMessage);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
-        <LinearGradient colors={colors.gradientePrimario} style={styles.container}>
-            <View style={styles.formContainer}>
-                <Text style={styles.title}>Registro</Text>
+        <LinearGradient colors={darkMode ? ['#34445a', '#526781'] : colors.gradientePrimario} style={styles.container}>
+            <View style={[styles.formContainer, darkMode && { backgroundColor: '#455a74', borderColor: '#657991', borderWidth: 1 }]}>
+                <Text style={[styles.title, darkMode && { color: '#f7faff' }]}>Registro</Text>
 
-                <View style={styles.inputContainer}>
-                    <Ionicons name="person-outline" size={24} color={colors.iluminado} />
+                <View style={[styles.inputContainer, darkMode && { backgroundColor: '#526781' }]}>
+                    <Ionicons name="person-outline" size={24} color={darkMode ? '#f7faff' : colors.iluminado} />
                     <TextInput
                         style={styles.input}
                         placeholder="Nombre completo"
@@ -115,8 +111,8 @@ const RegisterScreen = () => {
                     />
                 </View>
 
-                <View style={styles.inputContainer}>
-                    <Ionicons name="mail-outline" size={24} color={colors.iluminado} />
+                <View style={[styles.inputContainer, darkMode && { backgroundColor: '#526781' }]}>
+                    <Ionicons name="mail-outline" size={24} color={darkMode ? '#f7faff' : colors.iluminado} />
                     <TextInput
                         style={styles.input}
                         placeholder="Correo electrónico"
@@ -128,8 +124,8 @@ const RegisterScreen = () => {
                     />
                 </View>
 
-                <View style={styles.inputContainer}>
-                    <Ionicons name="lock-closed-outline" size={24} color={colors.iluminado} />
+                <View style={[styles.inputContainer, darkMode && { backgroundColor: '#526781' }]}>
+                    <Ionicons name="lock-closed-outline" size={24} color={darkMode ? '#f7faff' : colors.iluminado} />
                     <TextInput
                         style={styles.input}
                         placeholder="Contraseña"
@@ -141,8 +137,8 @@ const RegisterScreen = () => {
                     />
                 </View>
 
-                <View style={styles.inputContainer}>
-                    <Ionicons name="lock-closed-outline" size={24} color={colors.iluminado} />
+                <View style={[styles.inputContainer, darkMode && { backgroundColor: '#526781' }]}>
+                    <Ionicons name="lock-closed-outline" size={24} color={darkMode ? '#f7faff' : colors.iluminado} />
                     <TextInput
                         style={styles.input}
                         placeholder="Confirmar contraseña"
@@ -156,8 +152,8 @@ const RegisterScreen = () => {
 
                 {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-                <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                    <Text style={styles.buttonText}>Registrarse</Text>
+                <TouchableOpacity style={styles.registerButton} onPress={handleRegister} disabled={isSubmitting}>
+                    <Text style={styles.buttonText}>{isSubmitting ? 'Creando cuenta...' : 'Registrarse'}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>

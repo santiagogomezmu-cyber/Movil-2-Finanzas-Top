@@ -6,8 +6,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { auth, signOut } from "../services/firebaseService";
 import { selectAndUploadImage } from "../services/cloudinaryService";
 import { updateUserProfilePhoto } from "../services/userService";
+import { useAuth } from "../../navigation/AuthContext";
 
 const UserScreen = () => {
+    const { darkMode } = useAuth();
+    const palette = darkMode
+        ? { background: '#34445a', surface: '#455a74', text: '#f7faff', muted: '#d6e0ed', border: '#657991' }
+        : { background: colors.fondloClaro, surface: colors.iluminado, text: colors.oscuro, muted: colors.subtitilo, border: colors.suave };
     // Current user data from Firebase, or defaults if not available
     const user = auth.currentUser;
     const userName = user?.displayName || "Usuario Prueba";
@@ -33,7 +38,10 @@ const UserScreen = () => {
             }
         } catch (error) {
             console.error("Error al actualizar la foto:", error);
-            Alert.alert("Error", "No se pudo actualizar la foto de perfil.");
+            Alert.alert(
+                "No se pudo actualizar la foto",
+                error.message || "Revisa tu conexión y la configuración de Cloudinary e inténtalo de nuevo."
+            );
         } finally {
             setIsUploading(false);
         }
@@ -48,7 +56,7 @@ const UserScreen = () => {
     };
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={[styles.container, { backgroundColor: palette.background }]}>
             <LinearGradient colors={colors.gradienteSecundario} style={styles.headerBackground}>
                 <TouchableOpacity onPress={handleUpdatePhoto} disabled={isUploading}>
                     <View style={styles.profileImageContainer}>
@@ -60,6 +68,7 @@ const UserScreen = () => {
                         {isUploading && (
                             <View style={styles.loadingOverlay}>
                                 <ActivityIndicator size="large" color={colors.iluminado} />
+                                <Text style={styles.loadingText}>Subiendo foto...</Text>
                             </View>
                         )}
                     </View>
@@ -69,24 +78,24 @@ const UserScreen = () => {
             </LinearGradient>
 
             <View style={styles.content}>
-                <View style={styles.infoCard}>
-                    <Text style={styles.sectionTitle}>Información Personal</Text>
+                <View style={[styles.infoCard, { backgroundColor: palette.surface }]}>
+                    <Text style={[styles.sectionTitle, { color: palette.text }]}>Información Personal</Text>
                     
                     <View style={styles.infoRow}>
                         <Ionicons name="person-outline" size={24} color={colors.variante2} />
                         <View style={styles.infoTextContainer}>
-                            <Text style={styles.infoLabel}>Nombre Completo</Text>
-                            <Text style={styles.infoValue}>{userName}</Text>
+                            <Text style={[styles.infoLabel, { color: palette.muted }]}>Nombre Completo</Text>
+                            <Text style={[styles.infoValue, { color: palette.text }]}>{userName}</Text>
                         </View>
                     </View>
 
-                    <View style={styles.divider} />
+                    <View style={[styles.divider, { backgroundColor: palette.border }]} />
 
                     <View style={styles.infoRow}>
                         <Ionicons name="mail-outline" size={24} color={colors.variante2} />
                         <View style={styles.infoTextContainer}>
-                            <Text style={styles.infoLabel}>Correo Electrónico</Text>
-                            <Text style={styles.infoValue}>{userEmail}</Text>
+                            <Text style={[styles.infoLabel, { color: palette.muted }]}>Correo Electrónico</Text>
+                            <Text style={[styles.infoValue, { color: palette.text }]}>{userEmail}</Text>
                         </View>
                     </View>
                 </View>
@@ -133,6 +142,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    loadingText: {
+        color: colors.iluminado,
+        fontSize: 13,
+        fontWeight: '700',
+        marginTop: 8,
     },
     userName: {
         fontSize: 24,

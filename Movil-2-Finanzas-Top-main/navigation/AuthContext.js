@@ -1,11 +1,11 @@
 import { createContext, useContext } from "react";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (!context){
-        throw new Error('Acá va un mensaje epecifico de error en torno al contexto')
+    if (!context) {
+        throw new Error('useAuth debe usarse dentro de AppNavigator');
     }
     return context;
 };

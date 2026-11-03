@@ -1,6 +1,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   initializeAuth,
+  getAuth,
   getReactNativePersistence,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -10,18 +11,13 @@ import {
 import { getFirestore } from 'firebase/firestore';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
-const readEnvValue = (key) => {
-  const value = process.env[key];
-  return typeof value === 'string' ? value.trim() : '';
-};
-
 const firebaseConfig = {
-  apiKey: readEnvValue('EXPO_PUBLIC_FIREBASE_API_KEY'),
-  authDomain: readEnvValue('EXPO_PUBLIC_AUTH_DOMAIN'),
-  projectId: readEnvValue('EXPO_PUBLIC_PROJECT_ID'),
-  storageBucket: readEnvValue('EXPO_PUBLIC_STORAGE_BUCKET'),
-  messagingSenderId: readEnvValue('EXPO_PUBLIC_MESSAGING_SENDER_ID'),
-  appId: readEnvValue('EXPO_PUBLIC_APP_ID')
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY?.trim() || '',
+  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN?.trim() || '',
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID?.trim() || '',
+  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET?.trim() || '',
+  messagingSenderId: process.env.EXPO_PUBLIC_MESSAGING_SENDER_ID?.trim() || '',
+  appId: process.env.EXPO_PUBLIC_APP_ID?.trim() || ''
 };
 
 const requiredFirebaseFields = Object.entries(firebaseConfig).filter(([key, value]) => {
@@ -49,9 +45,14 @@ let db = null;
 if (isFirebaseConfigured) {
   try {
     app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-    auth = initializeAuth(app, {
-      persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-    });
+    try {
+      auth = initializeAuth(app, {
+        persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+      });
+    } catch (error) {
+      if (error.code !== 'auth/already-initialized') throw error;
+      auth = getAuth(app);
+    }
     db = getFirestore(app);
   } catch (error) {
     console.error('Error inicializando Firebase:', error);

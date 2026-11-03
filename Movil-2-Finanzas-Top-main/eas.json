@@ -1,0 +1,46 @@
+{
+    "cli": {
+        "version": ">= 12.0.0"
+    },
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal",
+            "env": {
+                "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyArFTT4hzcDmOcGeZ9sr_ImUV-VZ7VtWzE",
+                "EXPO_PUBLIC_AUTH_DOMAIN": "proyecto-movil-1-a3b0f.firebaseapp.com",
+                "EXPO_PUBLIC_PROJECT_ID": "proyecto-movil-1-a3b0f",
+                "EXPO_PUBLIC_STORAGE_BUCKET": "proyecto-movil-1-a3b0f.appspot.com",
+                "EXPO_PUBLIC_MESSAGING_SENDER_ID": "1073673217663",
+                "EXPO_PUBLIC_APP_ID": "1:1073673217663:web:a9642a738543598f7b414a",
+                "EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME": "c1fkcpoa",
+                "EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET": "perfil_unsigned"
+            }
+        },
+        "preview": {
+            "distribution": "internal",
+            "env": {
+                "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyArFTT4hzcDmOcGeZ9sr_ImUV-VZ7VtWzE",
+                "EXPO_PUBLIC_AUTH_DOMAIN": "proyecto-movil-1-a3b0f.firebaseapp.com",
+                "EXPO_PUBLIC_PROJECT_ID": "proyecto-movil-1-a3b0f",
+                "EXPO_PUBLIC_STORAGE_BUCKET": "proyecto-movil-1-a3b0f.appspot.com",
+                "EXPO_PUBLIC_MESSAGING_SENDER_ID": "1073673217663",
+                "EXPO_PUBLIC_APP_ID": "1:1073673217663:web:a9642a738543598f7b414a",
+                "EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME": "c1fkcpoa",
+                "EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET": "perfil_unsigned"
+            }
+        },
+        "production": {
+            "env": {
+                "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyArFTT4hzcDmOcGeZ9sr_ImUV-VZ7VtWzE",
+                "EXPO_PUBLIC_AUTH_DOMAIN": "proyecto-movil-1-a3b0f.firebaseapp.com",
+                "EXPO_PUBLIC_PROJECT_ID": "proyecto-movil-1-a3b0f",
+                "EXPO_PUBLIC_STORAGE_BUCKET": "proyecto-movil-1-a3b0f.appspot.com",
+                "EXPO_PUBLIC_MESSAGING_SENDER_ID": "1073673217663",
+                "EXPO_PUBLIC_APP_ID": "1:1073673217663:web:a9642a738543598f7b414a",
+                "EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME": "c1fkcpoa",
+                "EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET": "perfil_unsigned"
+            }
+        }
+    }
+}

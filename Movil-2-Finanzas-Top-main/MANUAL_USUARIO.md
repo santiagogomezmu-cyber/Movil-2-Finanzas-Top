@@ -12,10 +12,17 @@ Al abrir la aplicación por primera vez, verás la pantalla de inicio de sesión
 
 Una vez inicias sesión, accederás a la pantalla principal. Aquí podrás gestionar tu presupuesto mensual.
 
+En **Accesos rápidos** puedes saltar al formulario de gastos, al perfil, a los ajustes o cambiar el tema. En la barra inferior también encontrarás **Contactos**, junto a Home, Perfil y Ajustes.
+Desde el acceso rápido **Modo oscuro** o desde **Ajustes > Preferencias** puedes cambiar el tema; se aplica en las pantallas y queda guardado para la próxima vez que abras la app.
+
 ### Establecer tus Ingresos
 1. Busca la sección **"💰 Ingresos Mensuales"**.
 2. En el recuadro con el ícono de billete, escribe tu salario o presupuesto total del mes (ejemplo: `1500000`).
-3. El sistema guardará automáticamente esta cantidad. Si cierras la aplicación, ¡tu salario seguirá ahí!
+3. Al salir del campo, el sistema guardará esta cantidad. Si cierras la aplicación, ¡tu salario seguirá ahí!
+
+### Revisar tus Indicadores
+El panel calcula el porcentaje del presupuesto usado, la tasa de ahorro, la cantidad de gastos registrados y el gasto promedio. Para calcular porcentajes, primero registra tus ingresos.
+También puedes ver consejos financieros en Home. Abre la pestaña **Contactos** para acceder a WhatsApp, correo e Instagram. Esos datos son ficticios de demostración y no corresponden a canales oficiales.
 
 ### Registrar un Nuevo Gasto
 1. Dirígete a la sección **"🛒 Registrar Gasto"**.

@@ -1,21 +1,25 @@
 import { useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View, Text, Alert, Dimensions } from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, View, Text, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, ensureFirebaseAuth } from "../../services/firebaseService";
+import { useAuth } from "../../../navigation/AuthContext";
 
 const { width, height } = Dimensions.get('window');
 
 const LoginScreen = () => {
+    const { darkMode } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigation = useNavigation();
 
     const handleLogin = async () => {
-        if (!email || !password) {
+        const normalizedEmail = email.trim();
+        if (!normalizedEmail || !password) {
             setError('Por favor completa todos los campos');
             return;
         }
@@ -28,18 +32,9 @@ const LoginScreen = () => {
         }
 
         try {
+            setIsSubmitting(true);
             const firebaseAuth = ensureFirebaseAuth();
-            const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
-            const user = userCredential.user;
-
-            Alert.alert('🚀 ¡De Vuelta!', '¡Qué bueno verte por aquí otra vez!', [
-                {
-                    text: '¡A darle!', onPress: () => navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Main' }],
-                    })
-                }
-            ]);
+            await signInWithEmailAndPassword(firebaseAuth, normalizedEmail, password);
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
 
@@ -51,6 +46,9 @@ const LoginScreen = () => {
                     break;
                 case 'auth/wrong-password':
                     errorMessage = 'Contraseña incorrecta';
+                    break;
+                case 'auth/invalid-credential':
+                    errorMessage = 'Correo o contraseña incorrectos';
                     break;
                 case 'auth/invalid-email':
                     errorMessage = 'El formato del correo electrónico no es válido';
@@ -69,6 +67,8 @@ const LoginScreen = () => {
             }
 
             setError(errorMessage);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -85,22 +85,22 @@ const LoginScreen = () => {
     };
 
     return (
-        <View style={styles.mainContainer}>
+        <View style={[styles.mainContainer, darkMode && { backgroundColor: '#34445a' }]}>
             {renderBackgroundEmojis()}
 
             <View style={styles.container}>
-                <View style={styles.formContainer}>
+                <View style={[styles.formContainer, darkMode && { backgroundColor: '#455a74', borderColor: '#657991' }]}>
                     <View style={styles.headerIconWrap}>
                         <Ionicons name="wallet" size={50} color="#11998e" />
                     </View>
-                    <Text style={styles.title}>Iniciar Sesión</Text>
+                    <Text style={[styles.title, darkMode && { color: '#f7faff' }]}>Iniciar Sesión</Text>
 
-                    <View style={styles.inputContainer}>
+                    <View style={[styles.inputContainer, darkMode && { backgroundColor: '#526781', borderColor: '#657991' }]}>
                         <Ionicons name="mail-outline" size={24} color="#11998e" style={styles.inputIcon} />
                         <TextInput
-                            style={styles.input}
+                            style={[styles.input, darkMode && { backgroundColor: '#526781', color: '#f7faff' }]}
                             placeholder="Correo electrónico"
-                            placeholderTextColor="rgba(0,0,0,0.4)"
+                            placeholderTextColor={darkMode ? '#d6e0ed' : 'rgba(0,0,0,0.4)'}
                             value={email}
                             onChangeText={setEmail}
                             keyboardType="email-address"
@@ -108,12 +108,12 @@ const LoginScreen = () => {
                         />
                     </View>
 
-                    <View style={styles.inputContainer}>
+                    <View style={[styles.inputContainer, darkMode && { backgroundColor: '#526781', borderColor: '#657991' }]}>
                         <Ionicons name="lock-closed-outline" size={24} color="#11998e" style={styles.inputIcon} />
                         <TextInput
-                            style={styles.input}
+                            style={[styles.input, darkMode && { backgroundColor: '#526781', color: '#f7faff' }]}
                             placeholder="Contraseña"
-                            placeholderTextColor="rgba(0,0,0,0.4)"
+                            placeholderTextColor={darkMode ? '#d6e0ed' : 'rgba(0,0,0,0.4)'}
                             value={password}
                             onChangeText={setPassword}
                             secureTextEntry
@@ -123,14 +123,14 @@ const LoginScreen = () => {
 
                     {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-                    <TouchableOpacity style={styles.btnWrapper} onPress={handleLogin}>
+                    <TouchableOpacity style={styles.btnWrapper} onPress={handleLogin} disabled={isSubmitting}>
                         <LinearGradient colors={['#1a2a6c', '#11998e']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.loginButton}>
-                            <Text style={styles.buttonText}>Entrar a mi Cuenta</Text>
+                            <Text style={styles.buttonText}>{isSubmitting ? 'Entrando...' : 'Entrar a mi Cuenta'}</Text>
                         </LinearGradient>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles.linkContainer}>
-                        <Text style={styles.linkText}>¿No tienes cuenta? <Text style={styles.linkBold}>Regístrate</Text></Text>
+                        <Text style={[styles.linkText, darkMode && { color: '#d6e0ed' }]}>¿No tienes cuenta? <Text style={styles.linkBold}>Regístrate</Text></Text>
                     </TouchableOpacity>
                 </View>
             </View>

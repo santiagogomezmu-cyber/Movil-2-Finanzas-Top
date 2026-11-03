@@ -1,30 +1,27 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 import { onAuthStateChanged } from "firebase/auth";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext, useAuth } from './AuthContext';
 
 import { auth } from '../src/services/firebaseService';
 
-import SplashScreen from '../src/screens/SplashScreen';
 import RegisterScreen from '../src/screens/auth/RegisterScreen';
 import LoginScreen from '../src/screens/auth/LoginScreen';
 import HomeScreen from '../src/screens/HomeScreen';
 import UserScreen from '../src/screens/UserScreen';
 import SettingsScreen from '../src/screens/SettingsScreen';
-
-const AuthContext = createContext({});
-
-export const useAuth = () => useContext(AuthContext);
+import ContactScreen from '../src/screens/ContactScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-const ProfileStack = createNativeStackNavigator();
 
 const TabNavigator = () => {
-    const { user } = useAuth();
+    const { user, darkMode } = useAuth();
 
     return(
         <Tab.Navigator 
@@ -35,6 +32,8 @@ const TabNavigator = () => {
 
                     if (route.name === "Home") {
                         iconName = focused ? 'home' : 'home-outline';
+                    } else if (route.name === "Contact") {
+                        iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
                     } else if(route.name === "Settings"){
                         iconName = focused ? 'settings' : 'settings-outline';
                     } else if(route.name === "User"){
@@ -58,50 +57,80 @@ const TabNavigator = () => {
                     
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: '#0077B6',
-                tabBarInactiveTintColor: 'gray',
+                tabBarActiveTintColor: darkMode ? '#55d6be' : '#0077B6',
+                tabBarInactiveTintColor: darkMode ? '#9aa8bd' : 'gray',
+                tabBarStyle: {
+                    backgroundColor: darkMode ? '#455a74' : '#ffffff',
+                    borderTopColor: darkMode ? '#657991' : '#e5e7eb',
+                },
                 headerShown: false,
             })}
         >
             <Tab.Screen name="Home" component={HomeScreen} options={{tabBarLabel:'Home'}}/>
             <Tab.Screen name="User" component={UserScreen} options={{tabBarLabel:'Usuario'}}/>
+            <Tab.Screen name="Contact" component={ContactScreen} options={{tabBarLabel:'Contactos'}}/>
             <Tab.Screen name="Settings" component={SettingsScreen} options={{tabBarLabel:'Ajustes'}}/>
         </Tab.Navigator>
     )
 }   
 
 const AppNavigator = () => {
-    const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState(auth?.currentUser ?? null);
+    const [darkMode, setDarkModeState] = useState(false);
 
     useEffect(() => {
-        const unsuscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
-            setIsLoading(false);
+        let isMounted = true;
+        const loadTheme = async () => {
+            try {
+                const savedTheme = await AsyncStorage.getItem('@dark_mode');
+                if (isMounted && savedTheme !== null) {
+                    setDarkModeState(JSON.parse(savedTheme) === true);
+                }
+            } catch (error) {
+                console.error('Error al cargar el tema:', error);
+            }
+        };
+
+        loadTheme();
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!auth) return undefined;
+
+        return onAuthStateChanged(auth, setUser, (error) => {
+            console.error('Error al comprobar la sesión:', error);
         });
-        return () => unsuscribe();
-    },[]);
+    }, []);
+
+    const setDarkMode = async (enabled) => {
+        try {
+            await AsyncStorage.setItem('@dark_mode', JSON.stringify(enabled));
+            setDarkModeState(enabled);
+        } catch (error) {
+            console.error('Error al guardar el tema:', error);
+            throw error;
+        }
+    };
 
     const authContextValue = {
         user,
-        setUser,
-        isLoading,
-        setIsLoading,
+        darkMode,
+        setDarkMode,
     };
-
-    if(isLoading){
-        return <SplashScreen/>;
-    }
 
     return (
         <AuthContext.Provider value={authContextValue}>
-            <Stack.Navigator initialRouteName={user ? 'Main' : 'Login'}>
+            <StatusBar style={darkMode ? 'light' : 'dark'} />
+            <Stack.Navigator initialRouteName={user ? 'Main' : 'Login'} screenOptions={{ headerShown: false }}>
                 {user ? (
-                    <Stack.Screen name="Main" component={TabNavigator} options={{headerShown: false}} />
+                    <Stack.Screen name="Main" component={TabNavigator} />
                 ) : (
                     <>
-                        <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}} />
-                        <Stack.Screen name="Register" component={RegisterScreen} options={{headerShown: false}} />
+                        <Stack.Screen name="Login" component={LoginScreen} />
+                        <Stack.Screen name="Register" component={RegisterScreen} />
                     </>
                 )}
             </Stack.Navigator>
